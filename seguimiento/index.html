@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Seguí tu pedido</title>
+  <meta name="theme-color" content="#0d0e11" />
+  <!-- Un enlace de seguimiento no tiene por qué aparecer en un buscador. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <!-- Sin `Referer`: el token va en la URL y no puede filtrarse al navegar. -->
+  <meta name="referrer" content="no-referrer" />
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/tienda.css" />
+</head>
+<body>
+  <header class="encabezado">
+    <div class="envoltorio encabezado__fila">
+      <a class="marca" href="../index.html">
+        <span class="marca__sello" data-sello aria-hidden="true">LR</span>
+        <span>
+          <span class="marca__nombre" data-marca-nombre>La Reserva</span>
+          <span class="marca__bajada">Seguimiento</span>
+        </span>
+      </a>
+      <span class="conexion" data-actualizado></span>
+    </div>
+  </header>
+
+  <main class="tienda envoltorio">
+    <section class="seccion" data-seguimiento>
+      <p style="color:var(--tinta-suave)">Buscando tu pedido…</p>
+    </section>
+  </main>
+
+  <script src="../runtime-config.js"></script>
+  <script type="module" src="../js/seguimiento.js"></script>
+</body>
+</html>

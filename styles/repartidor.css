@@ -1,0 +1,244 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * REPARTIDOR — SE USA EN LA CALLE, CON UNA MANO
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * PROCEDENCIA. El recorte de información es la doctrina de `js/core/rider.js`
+ * de TABA: el reparto ve adónde va y con quién habla, no la comanda de cocina.
+ * El diseño es propio.
+ *
+ * LAS CONDICIONES DE USO MANDAN
+ * -----------------------------
+ * · UNA MANO, EN MOVIMIENTO, A VECES CON GUANTES. Todo lo que se toca mide
+ *   56 px y va abajo, donde llega el pulgar sin recolocar el teléfono.
+ * · A VECES CON SOL DE FRENTE. El contraste es el más alto de todo el
+ *   proyecto: tinta plena sobre superficie, sin grises decorativos.
+ * · LA ACCIÓN SIGUIENTE ES UNA SOLA Y OCUPA TODO EL ANCHO. No hay que elegir:
+ *   el estado del pedido dice cuál es y es la única grande en pantalla.
+ * · LA DIRECCIÓN ES EL DATO MÁS GRANDE. Más que el nombre del cliente, más que
+ *   el código. Es lo que se lee de reojo en un semáforo.
+ * · LO QUE SE COBRA SE DESTACA SOLO CUANDO HAY QUE COBRAR. Un pedido ya pago
+ *   no muestra un importe, para que nadie le pida plata a alguien que ya pagó.
+ */
+
+.repartidor {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.repartidor__barra {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e3);
+  padding: var(--e3) var(--e4);
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borde);
+}
+.repartidor__barra strong { display: block; font-size: var(--texto-md); }
+.repartidor__barra small { color: var(--tinta-suave); font-size: var(--texto-xs); }
+
+.repartidor__cuerpo {
+  flex: 1;
+  padding: var(--e4);
+  padding-bottom: calc(var(--e12) + env(safe-area-inset-bottom, 0px));
+  max-width: 620px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.repartidor__titulo {
+  font-size: var(--texto-md);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--tinta-suave);
+  margin: var(--e6) 0 var(--e3);
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+}
+.repartidor__cuenta {
+  min-width: 24px; height: 24px;
+  display: grid; place-items: center;
+  border-radius: var(--radio-pill);
+  background: var(--superficie-viva);
+  color: var(--tinta);
+  font-size: var(--texto-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ══ Reparto en curso ════════════════════════════════════════════════════ */
+
+.reparto {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  overflow: hidden;
+  margin-bottom: var(--e4);
+}
+/* El que llevo en la mano se distingue del resto sin leer. */
+.reparto[data-activo="true"] {
+  border-color: var(--oro);
+  box-shadow: 0 0 0 1px var(--oro-borde), var(--sombra-carta);
+}
+
+.reparto__cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  padding: var(--e3) var(--e4);
+  background: var(--superficie-alta);
+  border-bottom: 1px solid var(--borde);
+}
+.reparto__codigo {
+  font-family: var(--tipo-numero);
+  font-weight: var(--peso-fuerte);
+  font-size: var(--texto-md);
+}
+.reparto__estado {
+  margin-left: auto;
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-fuerte);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--oro-brillo);
+}
+
+.reparto__cuerpo { padding: var(--e4); }
+
+/* El dato más grande de la pantalla. */
+.reparto__direccion {
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-fuerte);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.reparto__barrio {
+  margin-top: 2px;
+  color: var(--tinta-media);
+  font-size: var(--texto-md);
+}
+.reparto__referencia {
+  margin-top: var(--e2);
+  padding: var(--e2) var(--e3);
+  border-radius: var(--radio-sm);
+  background: var(--alerta-tenue);
+  border: 1px solid color-mix(in srgb, var(--alerta) 30%, transparent);
+  color: var(--alerta);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+}
+
+.reparto__datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+  margin-top: var(--e4);
+}
+
+.reparto__dato {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px var(--e3);
+  border-radius: var(--radio-pill);
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde);
+  font-size: var(--texto-sm);
+  color: var(--tinta-media);
+}
+.reparto__dato strong { color: var(--tinta); }
+
+/* Lo que hay que cobrar. Sólo aparece cuando hay que cobrar. */
+.reparto__cobro {
+  margin-top: var(--e4);
+  padding: var(--e3) var(--e4);
+  border-radius: var(--radio);
+  background: var(--exito-tenue);
+  border: 1px solid color-mix(in srgb, var(--exito) 40%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e3);
+}
+.reparto__cobro span { color: var(--exito); font-weight: var(--peso-medio); font-size: var(--texto-sm); }
+.reparto__cobro strong {
+  color: var(--exito);
+  font-size: var(--texto-xl);
+  font-variant-numeric: tabular-nums;
+}
+.reparto__pagado {
+  margin-top: var(--e4);
+  padding: var(--e3) var(--e4);
+  border-radius: var(--radio);
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde);
+  color: var(--tinta-media);
+  font-size: var(--texto-sm);
+}
+
+/* ── Acciones ──────────────────────────────────────────────────────────── */
+
+.reparto__acciones {
+  display: grid;
+  gap: var(--e2);
+  padding: var(--e4);
+  border-top: 1px solid var(--borde);
+}
+.reparto__acciones .boton { min-height: var(--toque-cocina); font-size: var(--texto-lg); }
+
+.reparto__secundarias { display: flex; gap: var(--e2); }
+.reparto__secundarias .boton { flex: 1; min-height: var(--toque); font-size: var(--texto-md); }
+
+/* Llamar y abrir el mapa son enlaces reales, no botones decorativos: usan las
+   apps del teléfono, que es lo que un repartidor ya sabe manejar. */
+.reparto__contacto { display: flex; gap: var(--e2); margin-top: var(--e3); }
+.reparto__contacto .boton { flex: 1; }
+
+/* ══ Historial ═══════════════════════════════════════════════════════════ */
+
+.repartidor__historial {
+  margin-top: var(--e8);
+  border-top: 1px solid var(--borde);
+  padding-top: var(--e4);
+}
+.repartidor__historial summary {
+  cursor: pointer;
+  color: var(--tinta-media);
+  font-size: var(--texto-sm);
+  min-height: var(--toque);
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+}
+.entrega-hecha {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--e3);
+  padding: var(--e3) 0;
+  border-bottom: 1px solid var(--borde);
+  font-size: var(--texto-sm);
+  color: var(--tinta-media);
+}
+.entrega-hecha strong { color: var(--tinta); font-family: var(--tipo-numero); }
+
+/* ══ Identidad ═══════════════════════════════════════════════════════════════
+ *
+ * El repartidor usa el MISMO sello y la MISMA tipografía de cartel que la tienda
+ * y el panel. No es coquetería: quien abre esta app tiene que reconocer de un
+ * vistazo que es del mismo comercio para el que trabaja, y un repartidor que
+ * lleva tres apps de tres locales las distingue por la marca, no por el layout.
+ */
+.repartidor__marca {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  min-width: 0;
+}
+.repartidor__marca .marca__sello { width: 34px; height: 34px; font-size: .95rem; }
+.repartidor__marca strong { font-size: 1.05rem; line-height: 1; display: block; }
+.repartidor__marca small { color: var(--tinta-suave); font-size: var(--texto-xs); }

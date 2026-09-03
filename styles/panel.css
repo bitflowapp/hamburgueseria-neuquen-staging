@@ -1,0 +1,512 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * PANEL DEL NEGOCIO Y PANTALLA DE COCINA
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * ESTO SÍ ES UNA HERRAMIENTA, Y SE VE COMO TAL.
+ * La tienda es una carta y respira. El panel es un instrumento de trabajo: más
+ * denso, más información por pantalla, cero adornos. Comparten la paleta para
+ * que sea el mismo producto, no el mismo diseño.
+ *
+ * LA COCINA MANDA EN LAS DECISIONES
+ * ---------------------------------
+ * · TRES COLUMNAS Y NADA MÁS. Nuevos, preparando, listos. Una cuarta columna
+ *   obliga a barrer la pantalla con la vista y en una cocina eso es un pedido
+ *   que se pasa.
+ *
+ * · SE LEE DE PARADO Y DE LEJOS. Los cuerpos de comanda van a 17-19 px, no a
+ *   13. La pantalla de cocina se mira desde un metro, con las manos ocupadas.
+ *
+ * · TODO LO QUE SE TOCA MIDE 56 px. Se toca de apuro y a veces con el nudillo.
+ *
+ * · CERO MODALES EN LA COMANDA. Los extras y los quitados están sobre la
+ *   tarjeta, siempre visibles. Un modal exige un toque para ver lo que hay que
+ *   cocinar, y otro para cerrarlo, con las manos sucias.
+ *
+ * · LA DEMORA SE VE SIN LEER. Un pedido pasado de tiempo tiene borde y fondo
+ *   propios, no sólo un número en rojo. Pero el número está igual: el color
+ *   solo deja afuera a quien no lo distingue.
+ */
+
+/* ══ Armazón ═════════════════════════════════════════════════════════════ */
+
+.panel {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel__barra {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  padding: var(--e3) var(--e4);
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borde);
+}
+
+.panel__marca {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  font-weight: var(--peso-fuerte);
+  margin-right: auto;
+}
+.panel__marca small {
+  display: block;
+  font-size: var(--texto-xs);
+  color: var(--tinta-suave);
+  font-weight: var(--peso-normal);
+}
+
+.pestanas { display: flex; gap: var(--e1); overflow-x: auto; scrollbar-width: none; }
+.pestanas::-webkit-scrollbar { display: none; }
+
+.pestana {
+  min-height: var(--toque);
+  padding: 0 var(--e4);
+  border: none;
+  border-radius: var(--radio-sm);
+  background: none;
+  color: var(--tinta-media);
+  font-weight: var(--peso-medio);
+  font-size: var(--texto-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+}
+.pestana:hover { background: var(--superficie-alta); color: var(--tinta); }
+.pestana[aria-current="true"] { background: var(--oro-tenue); color: var(--oro-brillo); }
+
+/* Contador de pendientes en la pestaña. Es lo que hace que un pedido nuevo se
+   vea aunque el operador esté en otra pantalla. */
+.pestana__globo {
+  min-width: 22px; height: 22px;
+  padding-inline: 6px;
+  display: grid; place-items: center;
+  border-radius: var(--radio-pill);
+  background: var(--oro);
+  color: var(--tinta-invertida);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-fuerte);
+  font-variant-numeric: tabular-nums;
+}
+.pestana__globo[hidden] { display: none; }
+
+.panel__cuerpo { flex: 1; padding: var(--e4); }
+
+.panel__titulo {
+  font-size: var(--texto-xl);
+  margin-bottom: var(--e4);
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  flex-wrap: wrap;
+}
+
+/* ══ Cocina (KDS) ════════════════════════════════════════════════════════ */
+
+.cocina {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--e3);
+  align-items: start;
+}
+
+.columna {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.columna__cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e2);
+  padding: var(--e3) var(--e4);
+  background: var(--superficie-alta);
+  border-bottom: 1px solid var(--borde);
+  font-weight: var(--peso-fuerte);
+  font-size: var(--texto-md);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.columna__cuenta {
+  min-width: 26px; height: 26px;
+  display: grid; place-items: center;
+  border-radius: var(--radio-pill);
+  background: var(--superficie-viva);
+  font-size: var(--texto-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.columna[data-columna="nuevos"] .columna__cabecera { color: var(--oro-brillo); }
+.columna[data-columna="nuevos"] .columna__cuenta { background: var(--oro); color: var(--tinta-invertida); }
+.columna[data-columna="preparando"] .columna__cabecera { color: var(--alerta); }
+.columna[data-columna="listos"] .columna__cabecera { color: var(--exito); }
+
+.columna__lista { padding: var(--e3); display: grid; gap: var(--e3); }
+
+.columna__vacia {
+  padding: var(--e8) var(--e4);
+  text-align: center;
+  color: var(--tinta-suave);
+  font-size: var(--texto-sm);
+}
+
+/* ── Comanda ────────────────────────────────────────────────────────────── */
+
+.comanda {
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde);
+  border-left: 4px solid var(--borde-fuerte);
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+.comanda[data-demorado="true"] {
+  border-left-color: var(--peligro);
+  background: color-mix(in srgb, var(--peligro-tenue) 55%, var(--superficie-alta));
+}
+.comanda[data-por-vencer="true"] { border-left-color: var(--alerta); }
+.comanda[data-nuevo="true"] { border-left-color: var(--oro); }
+
+.comanda__cabecera {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e2);
+  padding: var(--e3) var(--e4);
+  border-bottom: 1px solid var(--borde);
+}
+
+.comanda__codigo {
+  font-family: var(--tipo-numero);
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-fuerte);
+  letter-spacing: .02em;
+}
+
+.comanda__modo {
+  padding: 2px var(--e2);
+  border-radius: var(--radio-sm);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-fuerte);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  background: var(--superficie-viva);
+  color: var(--tinta-media);
+}
+.comanda__modo[data-modo="pickup"] { background: var(--oro-tenue); color: var(--oro-brillo); }
+
+.comanda__reloj {
+  margin-left: auto;
+  font-size: var(--texto-md);
+  font-weight: var(--peso-fuerte);
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta-media);
+}
+.comanda[data-demorado="true"] .comanda__reloj { color: var(--peligro); }
+.comanda[data-por-vencer="true"] .comanda__reloj { color: var(--alerta); }
+
+/*
+ * El cuerpo de la comanda. Tipografía grande a propósito: esto se lee de
+ * parado, a un metro de la pantalla, con las manos ocupadas.
+ */
+.comanda__lineas { padding: var(--e3) var(--e4); display: grid; gap: var(--e3); }
+
+.comanda__linea { display: grid; grid-template-columns: auto 1fr; gap: var(--e3); align-items: start; }
+
+.comanda__cantidad {
+  font-size: 1.25rem;
+  font-weight: var(--peso-fuerte);
+  color: var(--oro-brillo);
+  font-variant-numeric: tabular-nums;
+  min-width: 2.2ch;
+}
+
+.comanda__producto { font-size: 1.0625rem; font-weight: var(--peso-fuerte); line-height: 1.25; }
+
+.comanda__modificadores { margin-top: 3px; display: grid; gap: 1px; }
+.comanda__modificador {
+  font-size: 0.9375rem;
+  color: var(--exito);
+  font-weight: var(--peso-medio);
+}
+.comanda__modificador[data-quitado="true"] {
+  color: var(--peligro);
+  /* Tachado además del color: un código que sólo es color se pierde con la
+     pantalla de la cocina llena de vapor, o con quien no distingue el rojo. */
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.comanda__nota {
+  margin-top: 3px;
+  font-size: 0.9375rem;
+  color: var(--alerta);
+  font-weight: var(--peso-medio);
+}
+
+.comanda__pie {
+  padding: var(--e3) var(--e4) var(--e4);
+  border-top: 1px solid var(--borde);
+  display: grid;
+  gap: var(--e2);
+}
+
+.comanda__aclaracion {
+  padding: var(--e2) var(--e3);
+  border-radius: var(--radio-sm);
+  background: var(--alerta-tenue);
+  border: 1px solid color-mix(in srgb, var(--alerta) 35%, transparent);
+  font-size: var(--texto-sm);
+  color: var(--alerta);
+}
+
+.comanda__acciones { display: flex; gap: var(--e2); }
+.comanda__acciones .boton { flex: 1; min-height: var(--toque-cocina); font-size: var(--texto-md); }
+
+/* ══ Bandeja de pedidos ══════════════════════════════════════════════════ */
+
+.filtros { display: flex; gap: var(--e2); flex-wrap: wrap; margin-bottom: var(--e4); }
+
+.filtro {
+  min-height: 38px;
+  padding: 0 var(--e3);
+  border-radius: var(--radio-pill);
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--tinta-media);
+  font-size: var(--texto-sm);
+  cursor: pointer;
+}
+.filtro[aria-current="true"] { background: var(--oro); border-color: var(--oro); color: var(--tinta-invertida); font-weight: var(--peso-fuerte); }
+
+.tabla { width: 100%; border-collapse: collapse; font-size: var(--texto-sm); }
+.tabla th {
+  text-align: left;
+  padding: var(--e2) var(--e3);
+  color: var(--tinta-suave);
+  font-weight: var(--peso-medio);
+  font-size: var(--texto-xs);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  border-bottom: 1px solid var(--borde);
+}
+.tabla td { padding: var(--e3); border-bottom: 1px solid var(--borde); vertical-align: top; }
+.tabla tr:hover td { background: var(--superficie); }
+.tabla__numero { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+
+.pastilla {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px var(--e2);
+  border-radius: var(--radio-pill);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  background: var(--superficie-viva);
+  color: var(--tinta-media);
+  white-space: nowrap;
+}
+.pastilla[data-estado="submitted"] { background: var(--oro-tenue); color: var(--oro-brillo); }
+.pastilla[data-estado="preparing"] { background: var(--alerta-tenue); color: var(--alerta); }
+.pastilla[data-estado="ready"] { background: var(--exito-tenue); color: var(--exito); }
+.pastilla[data-estado="delivered"] { background: var(--superficie-viva); color: var(--tinta-suave); }
+.pastilla[data-estado="canceled"] { background: var(--peligro-tenue); color: var(--peligro); }
+
+/* ══ Carta ═══════════════════════════════════════════════════════════════ */
+
+.productos-panel { display: grid; gap: var(--e2); }
+
+.fila-producto {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: var(--e3);
+  align-items: center;
+  padding: var(--e3) var(--e4);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.fila-producto[data-pedible="false"] { opacity: .6; }
+
+.fila-producto__nombre { font-weight: var(--peso-medio); }
+.fila-producto__meta { font-size: var(--texto-xs); color: var(--tinta-suave); }
+
+.precio-editable {
+  width: 110px;
+  min-height: 38px;
+  padding: 0 var(--e3);
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--borde-fuerte);
+  background: var(--superficie-alta);
+  color: var(--tinta);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--peso-medio);
+}
+
+/* Interruptor de disponibilidad. Con texto al lado, nunca sólo el color. */
+.interruptor { display: inline-flex; align-items: center; gap: var(--e2); cursor: pointer; }
+.interruptor input { accent-color: var(--oro); width: 18px; height: 18px; }
+.interruptor span { font-size: var(--texto-sm); color: var(--tinta-media); }
+
+/* ══ Configuración ═══════════════════════════════════════════════════════ */
+
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: var(--e5);
+  margin-bottom: var(--e4);
+}
+.tarjeta h2 { font-size: var(--texto-lg); margin-bottom: var(--e2); }
+.tarjeta p { color: var(--tinta-media); font-size: var(--texto-sm); }
+
+.pendientes { display: grid; gap: var(--e2); margin-top: var(--e4); }
+.pendiente {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  padding: var(--e3) var(--e4);
+  border-radius: var(--radio-sm);
+  background: var(--alerta-tenue);
+  border: 1px solid color-mix(in srgb, var(--alerta) 30%, transparent);
+  font-size: var(--texto-sm);
+}
+.pendiente__icono { color: var(--alerta); font-weight: var(--peso-fuerte); }
+.pendiente code { color: var(--tinta-suave); font-size: var(--texto-xs); margin-left: auto; }
+
+/* ══ Responsive ══════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  /* En tablet vertical, tres columnas dejan la comanda ilegible. Se apilan y
+     cada una conserva su cabecera pegajosa. */
+  .cocina { grid-template-columns: 1fr; }
+  .fila-producto { grid-template-columns: 1fr auto; row-gap: var(--e2); }
+  .panel__barra { flex-wrap: wrap; }
+}
+
+@media (min-width: 1400px) {
+  .panel__cuerpo { padding: var(--e5) var(--e6); }
+}
+
+/* ══ Acceso ══════════════════════════════════════════════════════════════
+   Panel y repartidor comparten esta pantalla. No es un guardián —la autoridad
+   está en la RLS— pero sí es la diferencia entre una herramienta con sesión y
+   una URL secreta que se comparte por WhatsApp. */
+
+.acceso {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--e4);
+}
+
+.acceso__caja {
+  width: min(380px, 100%);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  padding: var(--e6);
+}
+
+.acceso__titulo { font-size: var(--texto-xl); margin-bottom: var(--e2); }
+.acceso__bajada { color: var(--tinta-media); font-size: var(--texto-sm); margin-bottom: var(--e5); }
+.acceso__cargando { color: var(--tinta-suave); }
+
+/* ══ Estado de la conexión en vivo ═══════════════════════════════════════
+   Un panel de cocina que se queda mudo y no lo dice es peor que uno que se
+   cae: nadie mira una pantalla que parece estar bien. Nunca es sólo color —
+   siempre lleva texto al lado. */
+
+.conexion {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  padding: 5px var(--e3);
+  border-radius: var(--radio-pill);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  white-space: nowrap;
+}
+.conexion__punto { width: 7px; height: 7px; border-radius: 50%; background: var(--tinta-suave); flex: none; }
+
+.conexion[data-estado="vivo"] { border-color: color-mix(in srgb, var(--exito) 40%, transparent); }
+.conexion[data-estado="vivo"] .conexion__punto { background: var(--exito); }
+
+.conexion[data-estado="caido"] {
+  border-color: var(--peligro);
+  background: var(--peligro-tenue);
+  color: var(--peligro);
+}
+.conexion[data-estado="caido"] .conexion__punto { background: var(--peligro); }
+
+.conexion button {
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ══ El estado del dinero ════════════════════════════════════════════════════
+ *
+ * Es un EJE DISTINTO del estado del pedido y se dibuja distinto a propósito: la
+ * pastilla del pedido es sólida y ésta va delineada. Dos códigos visuales
+ * separados para dos preguntas separadas —«¿en qué anda?» y «¿está cobrado?»—
+ * que es exactamente lo que se confunde cuando comparten forma.
+ */
+
+.comanda__dinero {
+  margin: 0;
+  padding: var(--e2) var(--e4);
+  border-top: 1px solid var(--borde);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-fuerte);
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+}
+/* El punto de color va ANTES del texto, nunca en lugar del texto. */
+.comanda__dinero::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.comanda__dinero[data-tono="alerta"]  { color: var(--alerta); background: var(--alerta-tenue); }
+.comanda__dinero[data-tono="peligro"] { color: var(--peligro); background: var(--peligro-tenue); }
+.comanda__dinero[data-tono="exito"]   { color: var(--exito); background: var(--exito-tenue); }
+.comanda__dinero[data-tono="neutro"]  { color: var(--tinta-media); }
+
+.pastilla-pago {
+  display: inline-block;
+  margin-top: 3px;
+  padding: 2px var(--e2);
+  border-radius: var(--radio-sm);
+  border: 1px solid currentColor;
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  white-space: nowrap;
+}
+.pastilla-pago[data-tono="alerta"]  { color: var(--alerta); }
+.pastilla-pago[data-tono="peligro"] { color: var(--peligro); }
+.pastilla-pago[data-tono="exito"]   { color: var(--exito); }
+.pastilla-pago[data-tono="neutro"]  { color: var(--tinta-suave); }

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Reparto · La Reserva</title>
+  <meta name="theme-color" content="#0b0b0d" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/tienda.css" />
+  <link rel="stylesheet" href="../styles/repartidor.css" />
+</head>
+<body class="repartidor">
+  <!-- Capa de acceso. Cubre la pantalla hasta que haya sesión de repartidor. -->
+  <div data-capa-acceso></div>
+
+  <header class="repartidor__barra" hidden>
+    <div class="repartidor__marca">
+      <span class="marca__sello" data-sello aria-hidden="true">LR</span>
+      <span>
+        <strong class="display" data-marca-nombre>La Reserva</strong>
+        <small>Reparto</small>
+      </span>
+    </div>
+    <div style="display:flex;align-items:center;gap:var(--e2);flex-wrap:wrap;justify-content:flex-end">
+      <span class="conexion" data-conexion data-estado="desconocido" hidden></span>
+      <span class="estado-local" data-turno data-abierto="true">
+        <span class="estado-local__punto" aria-hidden="true"></span>
+        <span data-turno-texto>En turno</span>
+      </span>
+      <span class="reparto__dato" data-identidad></span>
+    </div>
+  </header>
+
+  <main class="repartidor__cuerpo" id="cuerpo" hidden>
+    <!-- Lo que estoy repartiendo ahora. Va primero: es lo único que importa
+         mientras hay un pedido en la mano. -->
+    <section data-activo hidden></section>
+
+    <!-- Disponibles para tomar -->
+    <section>
+      <h2 class="repartidor__titulo">
+        Listos para retirar <span class="repartidor__cuenta" data-cuenta-disponibles>0</span>
+      </h2>
+      <div data-disponibles></div>
+    </section>
+
+    <details class="repartidor__historial">
+      <summary>Entregas de hoy <span data-cuenta-historial>0</span></summary>
+      <div data-historial></div>
+    </details>
+  </main>
+
+  <!-- Config de despliegue. Sin este archivo, la app corre en modo demo.
+       Lo genera scripts/desplegar-staging.mjs y NO se versiona. -->
+  <script src="../runtime-config.js"></script>
+  <script type="module" src="../js/repartidor.js"></script>
+</body>
+</html>

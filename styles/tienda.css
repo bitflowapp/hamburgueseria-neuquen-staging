@@ -1,0 +1,1383 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * LA TIENDA — PORTADA, CARTA, FICHA, CARRITO, CHECKOUT Y SEGUIMIENTO
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * OBJETIVO, EN UNA FRASE
+ * ----------------------
+ * Alguien entra desde Instagram con hambre, ve una hamburguesa, la agrega y
+ * termina el pedido. Todo lo que no colabore con eso sobra.
+ *
+ * LAS DECISIONES QUE SALEN DE AHÍ
+ *
+ * · LA FOTO MANDA. Es lo primero que se ve en la portada y lo más grande de
+ *   cada ficha. 45% de quien entra a la web de un restaurante busca la foto
+ *   antes que el precio, el horario o la dirección. La versión anterior de esta
+ *   tienda dibujaba la inicial del producto sobre un degradado: una carta de
+ *   diecinueve rectángulos vacíos.
+ *
+ * · EL PRECIO ES ORO Y ES GRANDE. Mismo bloque que el nombre, misma jerarquía.
+ *   Un precio que hay que buscar es una duda, y una duda es un carrito
+ *   abandonado.
+ *
+ * · EL CARRITO VIVE ABAJO. Barra fija, siempre a la vista y siempre a un pulgar
+ *   de distancia. En el encabezado sólo aparece en escritorio: en un teléfono,
+ *   la esquina superior derecha es el punto más lejos del pulgar.
+ *
+ * · LA FICHA ES UNA HOJA QUE SUBE, no una página nueva: volver no pierde el
+ *   lugar en la carta.
+ *
+ * · NADA DEPENDE DEL HOVER. Todo estado que informa se ve sin puntero. El
+ *   `:hover` sólo agrega brillo a lo que ya se entendía.
+ *
+ * · EL TEXTO SOBRE FOTO SIEMPRE LLEVA VELO. Escribir sobre la foto pelada
+ *   funciona con la foto de prueba y falla con la foto clara que suben mañana.
+ *   El velo (`--velo-foto`) hace que el contraste no dependa de qué foto sea.
+ */
+
+/* ══ Estructura ══════════════════════════════════════════════════════════ */
+
+.envoltorio {
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding-inline: var(--e4);
+}
+
+.tienda {
+  padding-bottom: calc(var(--barra-inferior) + env(safe-area-inset-bottom, 0px) + var(--e6));
+}
+
+/* ══ Encabezado ══════════════════════════════════════════════════════════ */
+
+.encabezado {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: color-mix(in srgb, var(--fondo) 86%, transparent);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--borde);
+}
+
+.encabezado__fila {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  min-height: var(--barra-superior);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  text-decoration: none;
+  color: inherit;
+  margin-right: auto;
+  min-width: 0;
+}
+
+/*
+ * El sello de la marca. Bordó de relleno con la crema encima: 8,02:1.
+ * El bordó como letra sería ilegible; como superficie es la firma de la casa.
+ */
+.marca__sello {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(155deg, var(--bordo-vivo), var(--bordo-hondo));
+  border: 1px solid color-mix(in srgb, var(--oro) 30%, transparent);
+  color: var(--tinta);
+  font-family: var(--tipo-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  flex: none;
+}
+
+.marca__texto { display: grid; min-width: 0; }
+
+.marca__nombre {
+  font-size: 1.15rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.marca__bajada {
+  font-size: var(--texto-xs);
+  color: var(--tinta-suave);
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+/* Estado del local. Nunca sólo color: siempre con texto al lado. */
+.estado-local {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  padding: 6px var(--e3);
+  border-radius: var(--radio-pill);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  white-space: nowrap;
+  flex: none;
+}
+.estado-local__punto {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--tinta-suave);
+  flex: none;
+}
+.estado-local[data-abierto="true"] { border-color: color-mix(in srgb, var(--exito) 40%, transparent); }
+.estado-local[data-abierto="true"] .estado-local__punto { background: var(--exito); }
+.estado-local[data-abierto="false"] { border-color: color-mix(in srgb, var(--peligro) 40%, transparent); }
+.estado-local[data-abierto="false"] .estado-local__punto { background: var(--peligro); }
+
+.encabezado__carrito {
+  display: none;
+  align-items: center;
+  gap: var(--e2);
+  min-height: 40px;
+  padding: 0 var(--e3);
+  border-radius: var(--radio-pill);
+  border: 1px solid var(--oro-borde);
+  background: var(--oro-tenue);
+  color: var(--oro);
+  cursor: pointer;
+  font-weight: var(--peso-fuerte);
+}
+.encabezado__carrito:hover { background: color-mix(in srgb, var(--oro) 22%, transparent); }
+.encabezado__carrito-cuenta { font-variant-numeric: tabular-nums; }
+
+/* ══ Portada ═════════════════════════════════════════════════════════════
+ *
+ * Foto a sangre, una promesa y un botón.
+ *
+ * El alto se limita con `dvh` y con un techo en píxeles: en un teléfono la
+ * primera hamburguesa tiene que asomar sin scroll, y en un monitor de 27" una
+ * portada al 70% de la altura es una valla, no una bienvenida.
+ */
+
+.portada {
+  position: relative;
+  isolation: isolate;
+  min-height: min(78dvh, 620px);
+  display: flex;
+  align-items: flex-end;
+  padding-block: var(--e16) var(--e10);
+  overflow: hidden;
+}
+
+.portada__foto { position: absolute; inset: 0; z-index: -2; }
+.portada__foto img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+}
+
+/*
+ * Dos capas de velo, no una.
+ *
+ * La vertical hace legible el texto de abajo; la horizontal despega el bloque
+ * de texto del borde izquierdo en pantallas anchas, donde el texto se apoya en
+ * un lado y la foto queda libre del otro.
+ */
+.portada__velo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* Oscuro donde va el texto, casi limpio donde está la comida. Un velo parejo
+     apaga la foto entera para proteger un texto que sólo ocupa un tercio. */
+  background:
+    linear-gradient(to right,
+      rgba(6, 6, 8, .94) 0%, rgba(6, 6, 8, .72) 30%,
+      rgba(6, 6, 8, .26) 62%, rgba(6, 6, 8, 0) 100%),
+    var(--velo-foto);
+}
+
+.portada__contenido { width: 100%; }
+
+.portada__sello {
+  display: inline-block;
+  padding: 5px var(--e3);
+  border-radius: var(--radio-pill);
+  background: var(--bordo);
+  color: var(--tinta);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-fuerte);
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  margin-bottom: var(--e4);
+}
+
+.portada__titulo {
+  font-size: var(--texto-4xl);
+  max-width: 14ch;
+  color: var(--tinta);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, .6);
+}
+/* La última palabra en oro: el ojo termina la frase en el color de la marca. */
+.portada__titulo em { font-style: normal; color: var(--oro); }
+
+.portada__bajada {
+  margin-top: var(--e4);
+  color: var(--tinta-media);
+  font-size: var(--texto-lg);
+  max-width: 34ch;
+}
+
+.portada__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e3);
+  margin-top: var(--e6);
+}
+
+.portada__datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e2);
+  margin: var(--e6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dato {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px var(--e3);
+  border-radius: var(--radio-pill);
+  background: color-mix(in srgb, var(--superficie) 80%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--borde);
+  font-size: var(--texto-xs);
+  color: var(--tinta-media);
+}
+.dato strong { color: var(--tinta); font-weight: var(--peso-medio); }
+.dato[data-tono="oro"] { border-color: var(--oro-borde); }
+.dato[data-tono="oro"] strong { color: var(--oro); }
+
+/* ══ Ventajas ════════════════════════════════════════════════════════════
+   Cuatro razones para comprar acá, en una tira que no roba altura. */
+
+.ventajas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--e3);
+  margin: var(--e8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ventaja {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  padding: var(--e3) var(--e4);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.ventaja__icono {
+  font-size: 1.3rem;
+  line-height: 1;
+  flex: none;
+}
+.ventaja__titulo { font-weight: var(--peso-fuerte); font-size: var(--texto-sm); }
+.ventaja__detalle { font-size: var(--texto-xs); color: var(--tinta-suave); }
+
+/* ══ Secciones ═══════════════════════════════════════════════════════════ */
+
+.seccion { padding-block: var(--e8); scroll-margin-top: calc(var(--barra-superior) + 70px); }
+
+.seccion__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--e2) var(--e4);
+  margin-bottom: var(--e5);
+}
+
+.seccion__titulo {
+  font-size: var(--texto-2xl);
+  color: var(--tinta);
+}
+/* La cuenta de productos, discreta, al lado del título. */
+.seccion__titulo small {
+  font-family: var(--tipo);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-normal);
+  color: var(--tinta-suave);
+  margin-left: var(--e2);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.seccion__bajada { color: var(--tinta-suave); font-size: var(--texto-sm); }
+
+/* ══ Destacados: carrusel horizontal ═════════════════════════════════════
+ *
+ * Desborda hasta el borde de la pantalla a propósito: una tarjeta cortada por
+ * el margen es lo que dice «hay más» sin necesidad de una flecha.
+ */
+
+.destacados { padding-block: var(--e8) 0; }
+
+.carrusel {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(230px, 260px);
+  gap: var(--e4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  margin-inline: calc(var(--e4) * -1);
+  padding: var(--e1) var(--e4) var(--e4);
+}
+.carrusel::-webkit-scrollbar { display: none; }
+.carrusel > * { scroll-snap-align: start; }
+
+/* ══ Categorías ══════════════════════════════════════════════════════════ */
+
+.categorias {
+  position: sticky;
+  top: var(--barra-superior);
+  z-index: 25;
+  background: color-mix(in srgb, var(--fondo) 92%, transparent);
+  backdrop-filter: blur(14px);
+  border-block: 1px solid var(--borde);
+  padding-block: var(--e3);
+  margin-top: var(--e8);
+}
+
+.categorias__lista {
+  display: flex;
+  gap: var(--e2);
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  margin-inline: calc(var(--e4) * -1);
+  padding-inline: var(--e4);
+}
+.categorias__lista::-webkit-scrollbar { display: none; }
+
+.categoria {
+  flex: none;
+  scroll-snap-align: start;
+  min-height: var(--toque);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  padding: 0 var(--e4);
+  border-radius: var(--radio-pill);
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--tinta-media);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transicion), color var(--transicion), border-color var(--transicion);
+}
+.categoria:hover { background: var(--superficie-viva); color: var(--tinta); }
+.categoria[aria-current="true"] {
+  background: var(--oro);
+  border-color: var(--oro);
+  color: var(--tinta-invertida);
+  font-weight: var(--peso-fuerte);
+}
+
+/* ══ Ficha de producto ═══════════════════════════════════════════════════ */
+
+.grilla {
+  display: grid;
+  gap: var(--e4);
+  /* 280px de mínimo: en un teléfono entra UNA por fila, con la foto en el
+     tamaño en que la comida se ve apetecible. Dos por fila en un móvil hace
+     que la foto mida 160px y deje de dar hambre. */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.producto {
+  position: relative;
+  /*
+   * Sobre la tarjeta hay DOS barras pegajosas: el encabezado y las categorías.
+   * Sin este margen, cualquier cosa que desplace una tarjeta hasta la vista
+   * —navegar con Tab, un salto por ancla— la deja debajo de ellas: se ve el
+   * borde de arriba y el nombre queda tapado, y el clic ni siquiera llega
+   * porque lo intercepta la barra.
+   */
+  scroll-margin-top: calc(var(--barra-superior) + 84px);
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  color: inherit;
+  transition: transform var(--transicion), border-color var(--transicion), box-shadow var(--transicion);
+}
+.producto:hover:not([disabled]) {
+  transform: translateY(-3px);
+  border-color: var(--oro-borde);
+  box-shadow: var(--sombra-carta);
+}
+.producto[disabled] { cursor: not-allowed; }
+
+.producto__foto {
+  aspect-ratio: 4 / 3;
+  background: var(--superficie-alta);
+  position: relative;
+  overflow: hidden;
+}
+.producto__foto img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 420ms cubic-bezier(.2, .7, .3, 1);
+}
+.producto:hover:not([disabled]) .producto__foto img { transform: scale(1.04); }
+
+/*
+ * Sin foto: brasa con la inicial. Es honesto —no hay foto— y no se ve como una
+ * imagen rota. Con la carta completa fotografiada esta regla no se aplica, pero
+ * tiene que seguir existiendo: el panel puede dar de alta un producto nuevo
+ * antes de que le saquen la foto.
+ */
+.producto__foto[data-sin-foto="true"] {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(120% 100% at 25% 0%, rgba(179, 36, 45, .30), transparent 62%),
+    linear-gradient(160deg, var(--superficie-alta), var(--superficie));
+}
+.producto__inicial {
+  font-family: var(--tipo-display);
+  font-size: 3.4rem;
+  color: var(--oro);
+  opacity: .42;
+}
+
+/* El degradado del pie de la foto: hace que la insignia y el velo de agotado
+   se lean sobre cualquier foto. */
+.producto__foto::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 42%;
+  background: linear-gradient(to top, rgba(6, 6, 8, .55), transparent);
+  pointer-events: none;
+}
+
+.producto__cuerpo {
+  padding: var(--e4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--e2);
+  flex: 1;
+}
+
+.producto__nombre {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-fuerte);
+  letter-spacing: -0.015em;
+}
+
+.producto__descripcion {
+  font-size: var(--texto-sm);
+  color: var(--tinta-media);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.producto__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e3);
+  margin-top: auto;
+  padding-top: var(--e2);
+}
+
+.precio {
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-fuerte);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--oro);
+}
+.precio--desde::before {
+  content: "desde ";
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-normal);
+  color: var(--tinta-suave);
+  letter-spacing: 0;
+}
+.precio[data-pendiente="true"] {
+  font-size: var(--texto-md);
+  color: var(--tinta-suave);
+  font-weight: var(--peso-medio);
+}
+
+.producto__agregar {
+  width: 42px; height: 42px;
+  flex: none;
+  display: grid; place-items: center;
+  border-radius: var(--radio-pill);
+  border: none;
+  background: var(--oro);
+  color: var(--tinta-invertida);
+  font-size: 1.45rem;
+  font-weight: var(--peso-fuerte);
+  line-height: 1;
+  box-shadow: 0 2px 12px rgba(242, 180, 24, .25);
+}
+
+/* ── Insignias ───────────────────────────────────────────────────────────
+ *
+ * Cinco tonos y ninguno más. Cada uno significa una cosa y siempre la misma:
+ * si «promo» a veces es oro y a veces bordó, deja de querer decir algo.
+ */
+.insignias {
+  position: absolute;
+  top: var(--e3); left: var(--e3);
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e1);
+}
+
+.insignia {
+  padding: 5px var(--e3);
+  border-radius: var(--radio-pill);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-fuerte);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  line-height: 1.35;
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+/* Preferencia de la gente: bordó relleno, crema encima. 8,02:1. */
+.insignia[data-tipo="mas-pedida"] { background: var(--bordo); color: var(--tinta); }
+/* Conveniencia y precio: oro. 10,08:1 invertido. */
+.insignia[data-tipo="combo"],
+.insignia[data-tipo="promo"] { background: var(--oro); color: var(--tinta-invertida); }
+/* Novedad: no compite con las dos anteriores. */
+.insignia[data-tipo="nuevo"] {
+  background: color-mix(in srgb, var(--superficie-alta) 88%, transparent);
+  color: var(--oro-brillo);
+  border: 1px solid var(--oro-borde);
+}
+.insignia[data-tipo="neutra"] {
+  background: color-mix(in srgb, var(--superficie-alta) 88%, transparent);
+  color: var(--tinta-media);
+  border: 1px solid var(--borde-fuerte);
+}
+
+.velo-agotado {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 8, 10, .74);
+  backdrop-filter: blur(2px);
+}
+.velo-agotado span {
+  padding: var(--e2) var(--e4);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-pill);
+  background: var(--superficie);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-fuerte);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+/*
+ * Un producto agotado se atenúa en el TEXTO, no en la foto.
+ *
+ * Bajarle la opacidad a la tarjeta entera apagaba también el cartel que dice
+ * «se agotó», que es justo lo que hay que poder leer.
+ */
+.producto[disabled] .producto__cuerpo { opacity: .55; }
+
+/* ══ Hoja del producto ═══════════════════════════════════════════════════ */
+
+.hoja {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, .68);
+  backdrop-filter: blur(5px);
+  padding: 0;
+  border: none;
+  animation: hoja-fondo var(--transicion) ease-out;
+}
+.hoja[hidden] { display: none; }
+
+@keyframes hoja-fondo { from { opacity: 0 } to { opacity: 1 } }
+@keyframes hoja-sube { from { transform: translateY(3%) } to { transform: none } }
+
+.hoja__panel {
+  width: min(560px, 100%);
+  max-height: 92dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-bottom: none;
+  border-radius: var(--radio-xl) var(--radio-xl) 0 0;
+  box-shadow: var(--sombra-hoja);
+  animation: hoja-sube 220ms cubic-bezier(.2, .8, .25, 1);
+  overflow: hidden;
+}
+
+/*
+ * Barra fija de la hoja.
+ *
+ * Antes la cruz flotaba suelta sobre el contenido y, al desplazarse por una
+ * lista larga de extras, quedaba encima de una opción —tapando su nombre— y sin
+ * nada que dijera qué producto se estaba configurando.
+ *
+ * El título aparece recién cuando la foto se fue hacia arriba (lo activa el
+ * controlador con `data-compacta`): mientras la cabecera grande se ve, repetir
+ * el nombre sería decirlo dos veces.
+ */
+.hoja__barra {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  min-height: 52px;
+  padding: var(--e2) var(--e3);
+  background: color-mix(in srgb, var(--superficie) 88%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transicion);
+}
+.hoja__barra[data-compacta="true"] { border-bottom-color: var(--borde); }
+
+.hoja__barra-titulo {
+  flex: 1;
+  min-width: 0;
+  font-weight: var(--peso-fuerte);
+  font-size: var(--texto-md);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transition: opacity var(--transicion);
+}
+.hoja__barra[data-compacta="true"] .hoja__barra-titulo { opacity: 1; }
+
+.hoja__cerrar {
+  width: 38px; height: 38px;
+  flex: none;
+  margin-left: auto;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--borde);
+  background: color-mix(in srgb, var(--superficie-alta) 85%, transparent);
+  color: var(--tinta);
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+.hoja__cerrar:hover { background: var(--superficie-viva); }
+
+.hoja__scroll { overflow-y: auto; overscroll-behavior: contain; flex: 1; }
+
+/* La foto sube por debajo de la barra: la barra flota sobre ella. */
+.hoja__foto { aspect-ratio: 16 / 10; position: relative; margin-top: -52px; }
+.hoja__foto img { width: 100%; height: 100%; object-fit: cover; }
+/* La foto sube 52px por debajo de la barra, así que la insignia tiene que
+   bajar los mismos 52 o queda tapada por la cruz de cerrar. */
+.hoja__foto .insignias { top: calc(52px + var(--e3)); }
+
+.hoja__cabecera { padding: var(--e5) var(--e5) var(--e4); }
+.hoja__titulo { font-size: var(--texto-2xl); }
+.hoja__descripcion { margin-top: var(--e2); color: var(--tinta-media); font-size: var(--texto-md); }
+
+/* ── Grupos de opciones ─────────────────────────────────────────────────── */
+
+.grupo { border-top: 1px solid var(--borde); padding: var(--e5); }
+
+.grupo__cabecera {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--e3);
+  margin-bottom: var(--e3);
+}
+.grupo__nombre { font-size: var(--texto-lg); font-weight: var(--peso-fuerte); }
+.grupo__ayuda { font-size: var(--texto-xs); color: var(--tinta-suave); margin-top: 2px; }
+
+.grupo__marca {
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-fuerte);
+  padding: 3px var(--e2);
+  border-radius: var(--radio-sm);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.grupo__marca[data-obligatorio="true"] { background: var(--oro-tenue); color: var(--oro); }
+.grupo__marca[data-obligatorio="false"] { background: var(--superficie-alta); color: var(--tinta-suave); }
+
+.opciones { display: grid; gap: var(--e2); }
+
+/* Toda la fila es el objetivo de toque, no sólo el circulito. */
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  min-height: var(--toque);
+  padding: var(--e2) var(--e3);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie-alta);
+  cursor: pointer;
+  transition: border-color var(--transicion), background var(--transicion);
+}
+.opcion:hover { background: var(--superficie-viva); }
+.opcion:has(input:checked) { border-color: var(--oro); background: var(--oro-tenue); }
+.opcion:has(input:disabled) { opacity: .45; cursor: not-allowed; }
+.opcion input { accent-color: var(--oro); width: 18px; height: 18px; flex: none; }
+.opcion__nombre { flex: 1; font-size: var(--texto-md); }
+.opcion__delta {
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-fuerte);
+  color: var(--oro);
+  font-variant-numeric: tabular-nums;
+}
+/* Un delta negativo descuenta: verde, que es lo que la gente lee como «a
+   favor». Nunca solo: siempre lleva el signo − al lado. */
+.opcion__delta[data-signo="menos"] { color: var(--exito); }
+.opcion__delta[data-pendiente="true"] { color: var(--tinta-suave); font-weight: var(--peso-normal); }
+
+.hoja__pie {
+  border-top: 1px solid var(--borde);
+  padding: var(--e4) var(--e5) calc(var(--e4) + env(safe-area-inset-bottom, 0px));
+  background: var(--superficie-alta);
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+}
+
+.contador {
+  display: flex;
+  align-items: center;
+  gap: var(--e1);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-pill);
+  background: var(--superficie);
+  flex: none;
+}
+.contador button {
+  width: var(--toque); height: var(--toque);
+  display: grid; place-items: center;
+  border: none;
+  background: none;
+  color: var(--tinta);
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: var(--radio-pill);
+}
+.contador button:disabled { color: var(--tinta-suave); cursor: not-allowed; }
+.contador output {
+  min-width: 2ch; text-align: center;
+  font-weight: var(--peso-fuerte);
+  font-variant-numeric: tabular-nums;
+}
+
+.notas-linea {
+  width: 100%;
+  min-height: var(--toque);
+  padding: var(--e3);
+  border-radius: var(--radio);
+  border: 1px solid var(--borde);
+  background: var(--superficie-alta);
+  color: var(--tinta);
+  resize: vertical;
+  font-size: var(--texto-md);
+}
+.notas-linea::placeholder { color: var(--tinta-suave); }
+
+/* ══ Botones ═════════════════════════════════════════════════════════════ */
+
+.boton {
+  min-height: var(--toque);
+  padding: 0 var(--e5);
+  border-radius: var(--radio);
+  border: 1px solid transparent;
+  font-size: var(--texto-md);
+  font-weight: var(--peso-fuerte);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e2);
+  transition: filter var(--transicion), background var(--transicion), transform var(--transicion);
+  text-decoration: none;
+}
+.boton:disabled { opacity: .45; cursor: not-allowed; }
+.boton:active:not(:disabled) { transform: translateY(1px); }
+
+.boton--principal { background: var(--oro); color: var(--tinta-invertida); }
+.boton--principal:hover:not(:disabled) { background: var(--oro-brillo); }
+
+/* El CTA que decide una venta: sombra propia para que flote sobre la carta. */
+.boton--cta { box-shadow: 0 4px 20px rgba(242, 180, 24, .28); }
+
+.boton--secundario {
+  background: var(--superficie-alta);
+  border-color: var(--borde-fuerte);
+  color: var(--tinta);
+}
+.boton--secundario:hover:not(:disabled) { background: var(--superficie-viva); }
+
+/* Sobre la foto de la portada: vidrio, no un color que compita con el oro. */
+.boton--vidrio {
+  background: color-mix(in srgb, var(--superficie-alta) 62%, transparent);
+  backdrop-filter: blur(10px);
+  border-color: var(--borde-fuerte);
+  color: var(--tinta);
+}
+.boton--vidrio:hover:not(:disabled) { background: color-mix(in srgb, var(--superficie-viva) 82%, transparent); }
+
+.boton--fantasma { background: none; color: var(--tinta-media); }
+.boton--fantasma:hover:not(:disabled) { color: var(--tinta); }
+
+.boton--peligro { background: var(--peligro-tenue); border-color: var(--peligro); color: var(--peligro); }
+
+.boton--ancho { width: 100%; }
+.boton--alto { min-height: 54px; font-size: var(--texto-lg); padding-inline: var(--e6); }
+
+/* El CTA lleva el precio adentro: se decide con el número a la vista. */
+.boton__precio {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  padding-left: var(--e3);
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-height: var(--toque);
+  padding: 0;
+  margin-bottom: var(--e2);
+  background: none;
+  border: none;
+  color: var(--tinta-suave);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  cursor: pointer;
+}
+.volver:hover { color: var(--tinta); }
+
+/* ══ Barra del carrito ═══════════════════════════════════════════════════ */
+
+.barra-carrito {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 40;
+  padding: var(--e3) var(--e4) calc(var(--e3) + env(safe-area-inset-bottom, 0px));
+  background: color-mix(in srgb, var(--superficie) 92%, transparent);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--sombra-flotante);
+  transform: translateY(115%);
+  transition: transform 240ms cubic-bezier(.2, .8, .25, 1);
+}
+.barra-carrito[data-visible="true"] { transform: none; }
+
+.barra-carrito__interior {
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+}
+
+.carrito-globo {
+  min-width: 27px; height: 27px;
+  padding-inline: 7px;
+  display: grid; place-items: center;
+  border-radius: var(--radio-pill);
+  background: rgba(20, 18, 14, .22);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-fuerte);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ══ Carrito ═════════════════════════════════════════════════════════════ */
+
+.linea-carrito {
+  display: flex;
+  gap: var(--e3);
+  padding: var(--e4) 0;
+  border-bottom: 1px solid var(--borde);
+  align-items: flex-start;
+}
+.linea-carrito:last-child { border-bottom: none; }
+
+/* La miniatura: reconocer lo que se pidió es más rápido con la foto que
+   leyendo el nombre, y un carrito que se entiende de un vistazo se abandona
+   menos. */
+.linea-carrito__foto {
+  width: 68px; height: 68px;
+  flex: none;
+  border-radius: var(--radio);
+  overflow: hidden;
+  background: var(--superficie-alta);
+}
+.linea-carrito__foto img { width: 100%; height: 100%; object-fit: cover; }
+
+.linea-carrito__cuerpo { flex: 1; min-width: 0; }
+.linea-carrito__nombre { font-weight: var(--peso-fuerte); font-size: var(--texto-md); }
+
+.linea-carrito__opciones {
+  margin-top: var(--e1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e1) var(--e2);
+  font-size: var(--texto-sm);
+  color: var(--tinta-media);
+}
+.linea-carrito__opcion[data-quitado="true"] { color: var(--tinta-suave); }
+
+.linea-carrito__notas {
+  margin-top: var(--e1);
+  font-size: var(--texto-sm);
+  color: var(--alerta);
+  font-style: italic;
+}
+
+.linea-carrito__acciones {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  margin-top: var(--e3);
+}
+
+.linea-carrito__precio {
+  text-align: right;
+  font-weight: var(--peso-fuerte);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--oro);
+}
+
+.contador--chico button { width: 34px; height: 34px; font-size: 1.05rem; }
+
+/* ══ Totales ═════════════════════════════════════════════════════════════ */
+
+.totales {
+  margin-top: var(--e5);
+  padding: var(--e4);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.totales__fila {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--e4);
+  padding: var(--e2) 0;
+  color: var(--tinta-media);
+  font-size: var(--texto-md);
+}
+.totales__fila[data-destacada="true"] {
+  border-top: 1px solid var(--borde);
+  margin-top: var(--e2);
+  padding-top: var(--e3);
+  color: var(--tinta);
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-fuerte);
+}
+.totales__fila[data-destacada="true"] span:last-child { color: var(--oro); }
+.totales__fila span:last-child { font-variant-numeric: tabular-nums; text-align: right; }
+
+/* ══ Checkout ════════════════════════════════════════════════════════════ */
+
+/*
+ * Los tres pasos, siempre visibles.
+ *
+ * No es una barra de progreso decorativa: es la respuesta a «¿cuánto falta?»,
+ * que es la pregunta que hace abandonar un checkout en el segundo campo.
+ */
+.pasos-checkout {
+  display: flex;
+  gap: var(--e2);
+  list-style: none;
+  margin: var(--e5) 0 var(--e6);
+  padding: 0;
+  counter-reset: paso;
+}
+.pasos-checkout li {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  padding: var(--e2) var(--e3);
+  border-radius: var(--radio-sm);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  color: var(--tinta-suave);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.pasos-checkout li span {
+  width: 20px; height: 20px;
+  flex: none;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--superficie-viva);
+  font-size: 11px;
+  font-weight: var(--peso-fuerte);
+}
+.pasos-checkout li[aria-current="step"] {
+  border-color: var(--oro-borde);
+  background: var(--oro-tenue);
+  color: var(--oro);
+}
+.pasos-checkout li[aria-current="step"] span { background: var(--oro); color: var(--tinta-invertida); }
+.pasos-checkout li[data-hecho="true"] { color: var(--exito); border-color: color-mix(in srgb, var(--exito) 35%, transparent); }
+.pasos-checkout li[data-hecho="true"] span { background: var(--exito); color: var(--tinta-invertida); }
+
+.bloque {
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  padding: var(--e5);
+  margin: 0 0 var(--e4);
+}
+.bloque__titulo {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-fuerte);
+  padding: 0;
+  margin-bottom: var(--e4);
+}
+
+.campo { display: grid; gap: 6px; margin-bottom: var(--e4); }
+.campo:last-child { margin-bottom: 0; }
+.campo label { font-size: var(--texto-sm); font-weight: var(--peso-medio); color: var(--tinta-media); }
+.campo input, .campo select, .campo textarea {
+  min-height: var(--toque);
+  padding: var(--e3);
+  border-radius: var(--radio);
+  border: 1px solid var(--borde-fuerte);
+  background: var(--superficie-alta);
+  color: var(--tinta);
+  font-size: var(--texto-md);
+  width: 100%;
+}
+.campo input:focus, .campo select:focus, .campo textarea:focus { border-color: var(--oro); }
+.campo input::placeholder, .campo textarea::placeholder { color: var(--tinta-suave); }
+.campo__error { font-size: var(--texto-sm); color: var(--peligro); }
+.campo__ayuda { font-size: var(--texto-xs); color: var(--tinta-suave); }
+.campo[data-invalido="true"] input,
+.campo[data-invalido="true"] select { border-color: var(--peligro); }
+
+.fila-campos { display: grid; gap: var(--e3); grid-template-columns: 2fr 1fr; }
+
+/* Selector de modo de entrega: dos opciones grandes, sin ambigüedad. */
+.modos { display: grid; grid-template-columns: 1fr 1fr; gap: var(--e3); margin-bottom: var(--e5); }
+.modo {
+  /*
+   * `relative` NO es decorativo: el radio de adentro es `position: absolute`, y
+   * sin un ancestro posicionado se ubica contra el bloque contenedor inicial —
+   * o sea, contra la esquina del documento, debajo del encabezado.
+   *
+   * Invisible es, igual. Pero un control que vive fuera de su tarjeta rompe la
+   * automatización y, con lupa o zoom alto, el foco del teclado se dibuja en un
+   * rincón de la pantalla que no tiene nada que ver con lo que está enfocado.
+   */
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: var(--e4) var(--e3);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie-alta);
+  cursor: pointer;
+  text-align: center;
+}
+.modo:has(input:checked) { border-color: var(--oro); background: var(--oro-tenue); }
+.modo:has(input:disabled) { opacity: .45; cursor: not-allowed; }
+/* Se oculta sin sacarlo del flujo de foco: `display:none` lo haría inalcanzable
+   con teclado y el grupo de radios dejaría de existir para un lector. */
+.modo input {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.modo__icono { font-size: 1.4rem; line-height: 1.2; }
+.modo__titulo { font-weight: var(--peso-fuerte); }
+.modo__detalle { font-size: var(--texto-xs); color: var(--tinta-suave); }
+
+/* ── Medios de pago ─────────────────────────────────────────────────────
+   Tarjetas y no un `<select>`: un desplegable esconde las opciones, y el medio
+   de pago es una de las cosas que la gente quiere ver ANTES de empezar. */
+.medios { display: grid; gap: var(--e2); }
+
+.medio {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  min-height: 58px;
+  padding: var(--e3) var(--e4);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie-alta);
+  cursor: pointer;
+  transition: border-color var(--transicion), background var(--transicion);
+}
+.medio:hover { background: var(--superficie-viva); }
+.medio:has(input:checked) { border-color: var(--oro); background: var(--oro-tenue); }
+.medio input { accent-color: var(--oro); width: 18px; height: 18px; flex: none; }
+.medio__icono { font-size: 1.3rem; line-height: 1; flex: none; }
+.medio__cuerpo { flex: 1; min-width: 0; }
+/* `block` explícito: son dos `span` y sin esto el detalle se pega al título en
+   la misma línea, que es como «Efectivo Pagás al recibir» se lee como una sola
+   frase sin sentido. */
+.medio__titulo { display: block; font-weight: var(--peso-fuerte); font-size: var(--texto-md); }
+.medio__detalle { display: block; font-size: var(--texto-xs); color: var(--tinta-suave); }
+
+.nota-confianza {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e2);
+  margin-top: var(--e4);
+  font-size: var(--texto-xs);
+  color: var(--tinta-suave);
+  text-align: center;
+}
+
+/* ══ Avisos ══════════════════════════════════════════════════════════════ */
+
+.aviso {
+  padding: var(--e3) var(--e4);
+  border-radius: var(--radio);
+  border: 1px solid var(--borde);
+  background: var(--superficie-alta);
+  font-size: var(--texto-sm);
+  margin-bottom: var(--e4);
+}
+.aviso[data-tono="error"] { border-color: var(--peligro); background: var(--peligro-tenue); }
+.aviso[data-tono="alerta"] { border-color: var(--alerta); background: var(--alerta-tenue); }
+.aviso[data-tono="exito"] { border-color: var(--exito); background: var(--exito-tenue); }
+.aviso ul { margin: var(--e2) 0 0; padding-left: var(--e5); }
+
+.vacio {
+  text-align: center;
+  padding: var(--e16) var(--e4);
+  color: var(--tinta-suave);
+}
+.vacio__icono { font-size: 3.4rem; opacity: .5; }
+.vacio h2 { margin: var(--e3) 0 var(--e2); color: var(--tinta); font-size: var(--texto-xl); }
+
+/* ══ Seguimiento ═════════════════════════════════════════════════════════
+ *
+ * Tiene que parecer la confirmación de una compra, no una pantalla de estado de
+ * un sistema. Lo primero grande es qué está pasando; el código es un dato de
+ * apoyo, no el título.
+ */
+
+.seguimiento__tapa {
+  padding: var(--e6) var(--e5);
+  border-radius: var(--radio-lg);
+  background:
+    radial-gradient(120% 130% at 12% 0%, rgba(179, 36, 45, .30), transparent 60%),
+    var(--superficie);
+  border: 1px solid var(--borde);
+  margin-top: var(--e4);
+}
+.seguimiento__estado { font-size: var(--texto-2xl); color: var(--tinta); }
+.seguimiento__detalle { color: var(--tinta-media); margin-top: var(--e2); }
+
+.seguimiento__codigo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  margin-top: var(--e4);
+  padding: var(--e2) var(--e4);
+  border-radius: var(--radio-pill);
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde-fuerte);
+  font-family: var(--tipo-numero);
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-fuerte);
+  color: var(--oro);
+  letter-spacing: .04em;
+}
+.seguimiento__codigo small {
+  font-family: var(--tipo);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-normal);
+  color: var(--tinta-suave);
+  letter-spacing: 0;
+}
+
+.pasos { display: grid; gap: 0; margin-top: var(--e6); }
+.paso {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: var(--e3);
+  align-items: start;
+  position: relative;
+  padding-bottom: var(--e5);
+}
+/* La línea que une los pasos se dibuja con un pseudoelemento y NO en el último,
+   para que la escalera no siga hacia la nada. */
+.paso:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 16px; top: 32px; bottom: 0;
+  width: 2px;
+  background: var(--borde);
+}
+.paso[data-estado="hecho"]:not(:last-child)::before { background: var(--exito); }
+.paso__marca {
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 2px solid var(--borde);
+  background: var(--superficie);
+  color: var(--tinta-suave);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-fuerte);
+  z-index: 1;
+}
+.paso[data-estado="hecho"] .paso__marca { border-color: var(--exito); color: var(--exito); }
+.paso[data-estado="actual"] .paso__marca {
+  border-color: var(--oro);
+  background: var(--oro);
+  color: var(--tinta-invertida);
+}
+.paso[data-estado="actual"] .paso__titulo { color: var(--tinta); font-weight: var(--peso-fuerte); }
+.paso__titulo { color: var(--tinta-suave); font-size: var(--texto-md); padding-top: 6px; }
+.paso__momento { font-size: var(--texto-xs); color: var(--tinta-suave); }
+
+/* ══ Pie ═════════════════════════════════════════════════════════════════ */
+
+.pie {
+  margin-top: var(--e12);
+  border-top: 1px solid var(--borde);
+  background: var(--superficie);
+}
+.pie__interior { padding-block: var(--e8); display: grid; gap: var(--e6); }
+
+.pie__bloque h3 {
+  font-size: var(--texto-sm);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--tinta-suave);
+  margin-bottom: var(--e3);
+}
+.pie__bloque p, .pie__bloque li { color: var(--tinta-media); font-size: var(--texto-sm); }
+.pie__bloque ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e1); }
+
+.pie__pagos { display: flex; flex-wrap: wrap; gap: var(--e2); }
+.chip-pago {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px var(--e3);
+  border-radius: var(--radio-sm);
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde-fuerte);
+  font-size: var(--texto-xs);
+  color: var(--tinta-media);
+}
+
+.pie__legal {
+  border-top: 1px solid var(--borde);
+  padding-top: var(--e4);
+  font-size: var(--texto-xs);
+  color: var(--tinta-suave);
+}
+
+/* ══ Responsive ══════════════════════════════════════════════════════════ */
+
+@media (max-width: 620px) {
+  .grilla { grid-template-columns: 1fr; }
+  .fila-campos { grid-template-columns: 1fr; }
+  .marca__bajada { display: none; }
+  .bloque { padding: var(--e4); }
+
+  /*
+   * EN UN TELÉFONO LA PORTADA SE APILA: foto arriba, texto abajo.
+   *
+   * Superpuesta se veía bien en el monitor y mal en el teléfono: el bloque de
+   * texto caía justo sobre la hamburguesa y tapaba la mitad de la única foto
+   * que tiene que dar hambre. En horizontal sobra ancho para poner el texto al
+   * costado de la comida; en vertical no sobra nada, y competir por el mismo
+   * espacio lo pierden los dos.
+   *
+   * Apilada, la foto se ve entera y el texto se lee sobre carbón sólido.
+   */
+  .portada {
+    display: block;
+    min-height: 0;
+    padding: 0;
+  }
+  .portada__foto {
+    position: relative;
+    height: min(42dvh, 330px);
+  }
+  /* El velo ya no protege texto: sólo funde el borde de la foto con el fondo
+     para que el corte no sea una línea recta. */
+  .portada__velo {
+    inset: auto 0 0 0;
+    height: 45%;
+    background: linear-gradient(to top, var(--fondo) 4%, rgba(6, 6, 8, 0) 100%);
+  }
+  .portada__contenido { padding-block: var(--e5) var(--e8); }
+  .portada__titulo { text-shadow: none; max-width: none; }
+  .portada__acciones { margin-top: var(--e5); }
+  .portada__acciones .boton { flex: 1; padding-inline: var(--e4); }
+  .portada__datos { margin-top: var(--e5); }
+
+  /* Cuatro ventajas apiladas son cuatro pantallas de scroll antes de la primera
+     hamburguesa. En dos columnas ocupan la mitad y se leen igual. */
+  .ventajas { grid-template-columns: 1fr 1fr; gap: var(--e2); margin-top: var(--e6); }
+  .ventaja { flex-direction: column; align-items: flex-start; gap: var(--e1); padding: var(--e3); }
+  .ventaja__detalle { line-height: 1.35; }
+  /* En un teléfono los tres pasos no entran con su texto: quedan los números,
+     que siguen respondiendo «cuánto falta». */
+  .pasos-checkout li { justify-content: center; font-size: 0; gap: 0; padding: var(--e2); }
+  .pasos-checkout li span { font-size: 11px; }
+  .pasos-checkout li[aria-current="step"] { font-size: var(--texto-xs); gap: var(--e2); padding-inline: var(--e3); }
+}
+
+@media (min-width: 621px) {
+  .encabezado__carrito { display: inline-flex; }
+}
+
+@media (min-width: 900px) {
+  .hoja { align-items: center; }
+  .hoja__panel {
+    border-radius: var(--radio-xl);
+    border-bottom: 1px solid var(--borde);
+    max-height: 88dvh;
+  }
+  .pie__interior { grid-template-columns: repeat(3, 1fr); }
+  .pie__legal { grid-column: 1 / -1; }
+}

@@ -1,0 +1,200 @@
+{
+  "_comentario": [
+    "REGISTRO DE DERECHOS DE LAS FOTOS DE LA CARTA.",
+    "",
+    "Ninguna de estas fotos es del local. Son fotos de STOCK con licencia",
+    "comercial, elegidas para que la carta se pueda ver y vender mientras no",
+    "existan fotos propias. `estadoDerechos` lo dice en cada entrada y el panel",
+    "lo muestra al lado de cada producto.",
+    "",
+    "POR QUE SE DECLARA EN VEZ DE DISIMULARSE: una foto de stock presentada como",
+    "el producto real es una promesa que la cocina no puede cumplir. Declararla",
+    "cuesta una linea y evita el reclamo de que el plato no se parece a la foto.",
+    "",
+    "PARA REEMPLAZAR POR FOTOS PROPIAS: cambiar `origen` por la ruta del archivo",
+    "propio, poner `estadoDerechos` en `propia`, y correr",
+    "`node scripts/preparar-imagenes.mjs --forzar`."
+  ],
+  "imagenes": {
+    "portada": {
+      "origen": "https://images.pexels.com/photos/17518458/pexels-photo-17518458.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "portada",
+      "alt": "Hamburguesa sobre fondo negro, con la mano encuadrando el pan",
+      "proveedor": "pexels",
+      "proveedorId": "17518458",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "clasica": {
+      "origen": "https://images.pexels.com/photos/30500754/pexels-photo-30500754.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Hamburguesa con lechuga y tomate sobre tabla, fondo oscuro",
+      "proveedor": "pexels",
+      "proveedorId": "30500754",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "bacon-cheese": {
+      "origen": "https://images.pexels.com/photos/18713424/pexels-photo-18713424.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Hamburguesa con bacon y cheddar fundido sobre fondo oscuro",
+      "proveedor": "pexels",
+      "proveedorId": "18713424",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "la-de-la-casa": {
+      "origen": "https://images.pexels.com/photos/15007045/pexels-photo-15007045.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Hamburguesa con hoja verde, tomate y queso fundido en pan de semillas",
+      "proveedor": "pexels",
+      "proveedorId": "15007045",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "picante": {
+      "origen": "https://images.pexels.com/photos/16407675/pexels-photo-16407675.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Hamburguesa con jalapenos, papas y salsas",
+      "proveedor": "pexels",
+      "proveedorId": "16407675",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "veggie": {
+      "origen": "https://images.pexels.com/photos/5639459/pexels-photo-5639459.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Hamburguesa vegetariana con canasta de papas",
+      "proveedor": "pexels",
+      "proveedorId": "5639459",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "combo-clasico": {
+      "origen": "https://images.pexels.com/photos/19247559/pexels-photo-19247559.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Hamburguesa con papas y bebida sobre fondo oscuro",
+      "proveedor": "pexels",
+      "proveedorId": "19247559",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "combo-bacon": {
+      "origen": "https://images.pexels.com/photos/33068076/pexels-photo-33068076.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Hamburguesa con bacon junto a papas fritas",
+      "proveedor": "pexels",
+      "proveedorId": "33068076",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "combo-doble": {
+      "origen": "https://images.pexels.com/photos/8305746/pexels-photo-8305746.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Dos hamburguesas con bacon y queso sobre tabla de madera",
+      "proveedor": "pexels",
+      "proveedorId": "8305746",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "papas-chicas": {
+      "origen": "https://images.pexels.com/photos/35017890/pexels-photo-35017890.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Papas fritas en bol negro con ketchup",
+      "proveedor": "pexels",
+      "proveedorId": "35017890",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "papas-grandes": {
+      "origen": "https://images.pexels.com/photos/29150162/pexels-photo-29150162.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Porcion generosa de papas fritas con ketchup",
+      "proveedor": "pexels",
+      "proveedorId": "29150162",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "papas-cheddar-bacon": {
+      "origen": "https://images.pexels.com/photos/21823086/pexels-photo-21823086.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Papas con salsa de cheddar y bacon",
+      "proveedor": "pexels",
+      "proveedorId": "21823086",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "aros-de-cebolla": {
+      "origen": "https://images.pexels.com/photos/17313960/pexels-photo-17313960.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Aros de cebolla con salsa barbacoa",
+      "proveedor": "pexels",
+      "proveedorId": "17313960",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "gaseosa-500": {
+      "origen": "https://images.pexels.com/photos/8880742/pexels-photo-8880742.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Vaso de gaseosa cola con hielo, fondo oscuro",
+      "proveedor": "pexels",
+      "proveedorId": "8880742",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "agua-500": {
+      "origen": "https://images.pexels.com/photos/1540235/pexels-photo-1540235.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Botellas de agua sin marca sobre fondo negro",
+      "proveedor": "pexels",
+      "proveedorId": "1540235",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "limonada": {
+      "origen": "https://images.pexels.com/photos/11161394/pexels-photo-11161394.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Limonada con menta sobre plato negro",
+      "proveedor": "pexels",
+      "proveedorId": "11161394",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "cerveza-473": {
+      "origen": "https://images.pexels.com/photos/15991209/pexels-photo-15991209.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Vaso de cerveza rubia con espuma, fondo oscuro",
+      "proveedor": "pexels",
+      "proveedorId": "15991209",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "porcion-cheddar": {
+      "origen": "https://images.pexels.com/photos/8463465/pexels-photo-8463465.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Salsa de cheddar cayendo sobre un recipiente",
+      "proveedor": "pexels",
+      "proveedorId": "8463465",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "porcion-bacon": {
+      "origen": "https://images.pexels.com/photos/30210736/pexels-photo-30210736.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Fetas de bacon crocante en primer plano",
+      "proveedor": "pexels",
+      "proveedorId": "30210736",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    },
+    "salsas": {
+      "origen": "https://images.pexels.com/photos/5192399/pexels-photo-5192399.jpeg?auto=compress&cs=tinysrgb&w=1800",
+      "tipo": "producto",
+      "alt": "Bol negro con papas y tres salsas para mojar",
+      "proveedor": "pexels",
+      "proveedorId": "5192399",
+      "licencia": "Pexels License - uso comercial permitido, sin atribucion obligatoria",
+      "estadoDerechos": "stock-referencia"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Panel · La Reserva</title>
+  <meta name="theme-color" content="#0b0b0d" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/tienda.css" />
+  <link rel="stylesheet" href="../styles/panel.css" />
+</head>
+<body>
+  <!-- Capa de acceso. Cubre el panel entero hasta que haya sesión con rol. -->
+  <div data-capa-acceso></div>
+
+  <a class="saltar-al-contenido" href="#cuerpo">Saltar al contenido</a>
+
+  <div class="panel" hidden>
+    <header class="panel__barra">
+      <div class="panel__marca">
+        <span class="marca__sello" data-sello aria-hidden="true">LR</span>
+        <span>
+          <span class="display" data-marca-nombre>La Reserva</span>
+          <small>Panel del negocio</small>
+        </span>
+      </div>
+
+      <nav class="pestanas" aria-label="Secciones del panel">
+        <button class="pestana" data-pestana="cocina" aria-current="true">
+          🔥 Cocina <span class="pestana__globo" data-globo-cocina hidden>0</span>
+        </button>
+        <button class="pestana" data-pestana="pedidos">📋 Pedidos</button>
+        <button class="pestana" data-pestana="carta">🍔 Carta</button>
+        <button class="pestana" data-pestana="configuracion">
+          ⚙ Configuración <span class="pestana__globo" data-globo-config hidden>0</span>
+        </button>
+      </nav>
+
+      <span class="conexion" data-conexion data-estado="desconocido" hidden></span>
+
+      <span class="estado-local" data-estado-local data-abierto="true">
+        <span class="estado-local__punto" aria-hidden="true"></span>
+        <span data-estado-local-texto>Abierto</span>
+      </span>
+
+      <span class="dato" data-identidad></span>
+    </header>
+
+    <main class="panel__cuerpo" id="cuerpo">
+      <!-- ══ Cocina ═══════════════════════════════════════════════════════ -->
+      <section data-seccion="cocina">
+        <h1 class="panel__titulo">
+          Cocina
+          <span class="dato" data-resumen-cocina></span>
+        </h1>
+        <div class="cocina" data-cocina></div>
+      </section>
+
+      <!-- ══ Pedidos ══════════════════════════════════════════════════════ -->
+      <section data-seccion="pedidos" hidden>
+        <h1 class="panel__titulo">Pedidos</h1>
+        <div class="filtros" data-filtros></div>
+        <div data-tabla-pedidos></div>
+      </section>
+
+      <!-- ══ Carta ════════════════════════════════════════════════════════ -->
+      <section data-seccion="carta" hidden>
+        <h1 class="panel__titulo">
+          Carta
+          <span class="dato">Los cambios impactan en la tienda al instante</span>
+        </h1>
+        <div data-carta-panel></div>
+      </section>
+
+      <!-- ══ Configuración ════════════════════════════════════════════════ -->
+      <section data-seccion="configuracion" hidden>
+        <h1 class="panel__titulo">Configuración</h1>
+        <div data-configuracion></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Config de despliegue. Sin este archivo, la app corre en modo demo.
+       Lo genera scripts/desplegar-staging.mjs y NO se versiona. -->
+  <script src="../runtime-config.js"></script>
+  <script type="module" src="../js/panel.js"></script>
+</body>
+</html>

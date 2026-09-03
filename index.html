@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>La Reserva · Hamburguesas en Neuquén</title>
+  <meta name="description" content="Hamburguesas a la parrilla en Neuquén Capital. Pedí online, retirá o te lo llevamos caliente." />
+  <meta name="theme-color" content="#0b0b0d" />
+
+  <!-- La foto de la portada es lo primero que se ve y lo que decide si alguien
+       se queda. Se precarga para que entre con la página y no después de ella. -->
+  <link rel="preload" as="image" href="assets/carta/portada.webp"
+        imagesrcset="assets/carta/portada-sm.webp 720w, assets/carta/portada.webp 1600w"
+        imagesizes="100vw" />
+  <link rel="preload" as="font" type="font/woff2" href="assets/tipografia/anton-latin.woff2" crossorigin />
+
+  <link rel="stylesheet" href="styles/tokens.css" />
+  <link rel="stylesheet" href="styles/tienda.css" />
+</head>
+<body>
+  <a class="saltar-al-contenido" href="#carta">Saltar a la carta</a>
+
+  <header class="encabezado">
+    <div class="envoltorio encabezado__fila">
+      <a class="marca" href="#inicio">
+        <span class="marca__sello" data-sello aria-hidden="true">LR</span>
+        <span class="marca__texto">
+          <span class="marca__nombre display" data-marca-nombre>La Reserva</span>
+          <span class="marca__bajada" data-marca-bajada>Hamburguesas · Neuquén</span>
+        </span>
+      </a>
+
+      <span class="estado-local" data-estado-local data-abierto="true">
+        <span class="estado-local__punto" aria-hidden="true"></span>
+        <span data-estado-local-texto>Abierto</span>
+      </span>
+
+      <!-- El carrito del encabezado sólo aparece cuando hay algo adentro y sólo
+           en escritorio: en un teléfono el punto más lejos del pulgar es la
+           esquina superior derecha, y para eso está la barra de abajo. -->
+      <button class="encabezado__carrito" data-ir-al-carrito hidden>
+        <span aria-hidden="true">🛒</span>
+        <span class="encabezado__carrito-cuenta" data-encabezado-cantidad>0</span>
+        <span class="solo-lectores">Ver el pedido</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="tienda" id="inicio">
+    <!-- ══ Vista: carta ══════════════════════════════════════════════════ -->
+    <section class="vista" data-vista="carta">
+
+      <!-- ── Portada comercial ──────────────────────────────────────────
+           Foto a sangre, una promesa y un botón. Nada más. Lo que ocupa la
+           primera pantalla tiene que dar hambre o llevar a la carta. -->
+      <div class="portada">
+        <picture class="portada__foto">
+          <source media="(max-width: 720px)" srcset="assets/carta/portada-sm.webp" />
+          <img src="assets/carta/portada.webp" alt="" fetchpriority="high" decoding="async" />
+        </picture>
+        <div class="portada__velo" aria-hidden="true"></div>
+
+        <div class="envoltorio portada__contenido">
+          <p class="portada__sello" data-portada-sello>Parrilla · Neuquén Capital</p>
+          <h1 class="portada__titulo display" data-portada-titulo>Carne, fuego y punto justo.</h1>
+          <p class="portada__bajada" data-portada-bajada>Pedí online. Te llega caliente.</p>
+
+          <div class="portada__acciones">
+            <a class="boton boton--principal boton--alto" href="#carta">Ver la carta</a>
+            <!-- `cat-combos` y no `combos`: la carta genera los anclajes con ese
+                 prefijo. Y `data-categoria` porque si hay un filtro puesto la
+                 sección de combos no está dibujada y el ancla no lleva a nada:
+                 el mismo clic cambia el filtro y después salta. -->
+            <a class="boton boton--vidrio boton--alto" href="#cat-combos"
+               data-categoria="combos">Ver combos</a>
+          </div>
+
+          <ul class="portada__datos" data-portada-datos></ul>
+        </div>
+      </div>
+
+      <!-- ── Ventajas ─────────────────────────────────────────────────── -->
+      <div class="envoltorio">
+        <ul class="ventajas" data-ventajas></ul>
+      </div>
+
+      <!-- ── Destacados ───────────────────────────────────────────────── -->
+      <div class="envoltorio">
+        <section class="destacados" data-destacados hidden>
+          <div class="seccion__cabecera">
+            <h2 class="seccion__titulo display">Los que más salen</h2>
+            <p class="seccion__bajada">Si es tu primera vez, empezá por acá.</p>
+          </div>
+          <div class="carrusel" data-destacados-lista></div>
+        </section>
+      </div>
+
+      <!-- ── Navegación de categorías ─────────────────────────────────── -->
+      <nav class="categorias" aria-label="Categorías de la carta">
+        <div class="envoltorio">
+          <div class="categorias__lista" role="tablist" data-categorias></div>
+        </div>
+      </nav>
+
+      <!-- ── La carta ─────────────────────────────────────────────────── -->
+      <div class="envoltorio" id="carta" data-carta></div>
+
+      <!-- ── Pie ──────────────────────────────────────────────────────── -->
+      <footer class="pie">
+        <div class="envoltorio pie__interior" data-pie></div>
+      </footer>
+    </section>
+
+    <!-- ══ Vista: carrito ════════════════════════════════════════════════ -->
+    <section class="vista envoltorio" data-vista="carrito" hidden>
+      <div class="seccion">
+        <button class="volver" data-volver-a-carta>
+          <span aria-hidden="true">←</span> Seguir agregando
+        </button>
+        <h1 class="seccion__titulo display">Tu pedido</h1>
+        <div data-carrito-cuerpo></div>
+      </div>
+    </section>
+
+    <!-- ══ Vista: checkout ═══════════════════════════════════════════════ -->
+    <section class="vista envoltorio" data-vista="checkout" hidden>
+      <div class="seccion">
+        <button class="volver" data-ir-al-carrito>
+          <span aria-hidden="true">←</span> Volver al pedido
+        </button>
+        <h1 class="seccion__titulo display">Finalizar pedido</h1>
+
+        <!-- Los tres pasos, siempre visibles. Un checkout donde no se sabe
+             cuánto falta es un checkout que se abandona en el segundo campo. -->
+        <ol class="pasos-checkout" data-pasos-checkout>
+          <li data-paso="1" aria-current="step"><span>1</span> Entrega</li>
+          <li data-paso="2"><span>2</span> Tus datos</li>
+          <li data-paso="3"><span>3</span> Pago</li>
+        </ol>
+
+        <form data-formulario-checkout novalidate>
+          <div data-checkout-avisos></div>
+
+          <!-- ── 1. Entrega ─────────────────────────────────────────── -->
+          <fieldset class="bloque">
+            <legend class="bloque__titulo">¿Cómo lo querés recibir?</legend>
+            <div class="modos">
+              <label class="modo">
+                <input type="radio" name="modoEntrega" value="delivery" checked />
+                <span class="modo__icono" aria-hidden="true">🛵</span>
+                <span class="modo__titulo">Envío</span>
+                <span class="modo__detalle" data-detalle-envio>Te lo llevamos</span>
+              </label>
+              <label class="modo">
+                <input type="radio" name="modoEntrega" value="pickup" />
+                <span class="modo__icono" aria-hidden="true">🏠</span>
+                <span class="modo__titulo">Retiro</span>
+                <span class="modo__detalle">Lo pasás a buscar</span>
+              </label>
+            </div>
+
+            <div data-bloque-direccion>
+              <div class="fila-campos">
+                <div class="campo">
+                  <label for="calle">Calle</label>
+                  <input id="calle" name="calle" autocomplete="address-line1" />
+                  <span class="campo__error" data-error="calle"></span>
+                </div>
+                <div class="campo">
+                  <label for="numero">Número</label>
+                  <input id="numero" name="numero" inputmode="numeric" />
+                  <span class="campo__error" data-error="numero"></span>
+                </div>
+              </div>
+
+              <div class="fila-campos">
+                <div class="campo">
+                  <label for="barrio">Barrio</label>
+                  <select id="barrio" name="barrio" data-barrios></select>
+                  <span class="campo__error" data-error="barrio"></span>
+                </div>
+                <div class="campo">
+                  <label for="piso">Piso / depto</label>
+                  <input id="piso" name="piso" placeholder="Opcional" />
+                </div>
+              </div>
+
+              <div class="campo">
+                <label for="referencia">Referencia para el repartidor</label>
+                <input id="referencia" name="referencia" placeholder="Portón negro, timbre 2" />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- ── 2. Datos ───────────────────────────────────────────── -->
+          <fieldset class="bloque">
+            <legend class="bloque__titulo">Tus datos</legend>
+            <div class="campo">
+              <label for="nombre">Tu nombre</label>
+              <input id="nombre" name="clienteNombre" autocomplete="name" required />
+              <span class="campo__error" data-error="clienteNombre"></span>
+            </div>
+            <div class="campo">
+              <label for="telefono">Teléfono</label>
+              <input id="telefono" name="clienteTelefono" type="tel" inputmode="tel"
+                     autocomplete="tel" placeholder="299 555 1234" required />
+              <span class="campo__error" data-error="clienteTelefono"></span>
+              <span class="campo__ayuda">Para avisarte cuando salga.</span>
+            </div>
+            <div class="campo">
+              <label for="notas">Aclaraciones para el local</label>
+              <textarea id="notas" name="notas" rows="2" placeholder="Opcional"></textarea>
+            </div>
+          </fieldset>
+
+          <!-- ── 3. Pago ────────────────────────────────────────────── -->
+          <fieldset class="bloque">
+            <legend class="bloque__titulo">¿Cómo pagás?</legend>
+            <div class="medios" data-medios-de-pago role="radiogroup" aria-label="Medio de pago"></div>
+            <span class="campo__error" data-error="medioDePago"></span>
+          </fieldset>
+
+          <div class="totales" data-checkout-totales></div>
+
+          <button class="boton boton--principal boton--ancho boton--alto boton--cta"
+                  type="submit" data-confirmar>
+            <span data-confirmar-texto>Confirmar pedido</span>
+            <span class="boton__precio" data-confirmar-total></span>
+          </button>
+
+          <p class="nota-confianza">
+            <span aria-hidden="true">🔒</span>
+            El precio final lo calcula el local. Nada se cobra hasta que confirmes.
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ══ Vista: seguimiento ════════════════════════════════════════════ -->
+    <section class="vista envoltorio" data-vista="seguimiento" hidden>
+      <div class="seccion" data-seguimiento></div>
+    </section>
+  </main>
+
+  <!-- ══ Barra del carrito ═══════════════════════════════════════════════ -->
+  <div class="barra-carrito" data-barra-carrito data-visible="false">
+    <div class="barra-carrito__interior">
+      <button class="boton boton--principal boton--ancho boton--alto boton--cta" data-ir-al-carrito>
+        <span class="carrito-globo" data-carrito-cantidad>0</span>
+        <span data-carrito-etiqueta>Ver el pedido</span>
+        <span class="boton__precio" data-carrito-total>$ 0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ Hoja del producto ═══════════════════════════════════════════════ -->
+  <dialog class="hoja" data-hoja-producto hidden>
+    <div class="hoja__panel" role="document">
+      <div class="hoja__scroll" data-hoja-scroll>
+        <div class="hoja__barra" data-hoja-barra data-compacta="false">
+          <span class="hoja__barra-titulo" data-hoja-barra-titulo></span>
+          <button class="hoja__cerrar" data-cerrar-hoja aria-label="Cerrar">✕</button>
+        </div>
+        <div data-hoja-cuerpo></div>
+      </div>
+      <div class="hoja__pie">
+        <div class="contador">
+          <button type="button" data-cantidad-menos aria-label="Quitar uno">−</button>
+          <output data-cantidad>1</output>
+          <button type="button" data-cantidad-mas aria-label="Agregar uno">+</button>
+        </div>
+        <button class="boton boton--principal boton--alto boton--cta" style="flex:1" data-agregar-al-carrito>
+          <span>Agregar</span>
+          <span class="boton__precio" data-precio-configurado>$ 0</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Config de despliegue. Sin este archivo, la app corre en modo demo.
+       Lo genera scripts/publicar-pages.mjs y NO se versiona. -->
+  <script src="runtime-config.js"></script>
+  <script type="module" src="js/tienda.js"></script>
+</body>
+</html>
